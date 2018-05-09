@@ -1,0 +1,283 @@
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+
+
+
+
+
+
+
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
+
+
+
+
+public class Board extends JPanel{
+
+	private final int SIZE_PANEL = 800;
+	private final int SQUARE = 25;
+	ScoreBoard scoreBoard = new ScoreBoard();
+	Pacman pacman = new Pacman();
+	Timer timer = new Timer(50, null);
+	String direction = "";
+
+	int[][] board = {
+			  {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	            {1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
+	            {1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1},
+	            {1,3,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,3,1},
+	            {1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1},
+	            {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+	            {1,2,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,2,1},
+	            {1,2,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,2,1},
+	            {1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,0,2,2,2,1,1,2,2,2,2,2,2,1},
+	            {1,1,1,1,1,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,1,1,1,1,1},
+	            {0,0,0,0,0,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,0,0,0,0,0},
+	            {0,0,0,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0},
+	            {0,0,0,0,0,1,2,1,1,0,1,1,1,7,7,1,1,1,0,1,1,2,1,0,0,0,0,0},
+	            {1,1,1,1,1,1,2,1,1,0,1,6,0,0,0,0,6,1,0,1,1,2,1,1,1,1,1,1},
+	            {7,0,0,0,0,0,2,0,0,0,1,0,0,0,0,0,0,1,0,0,0,2,0,0,0,0,0,7},
+	            {1,1,1,1,1,1,2,1,1,0,1,6,0,0,0,0,6,1,0,1,1,2,1,1,1,1,1,1},
+	            {0,0,0,0,0,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,0,0,0,0,0},
+	            {0,0,0,0,0,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,0,0,0,0,0},
+	            {0,0,0,0,0,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,0,0,0,0,0},
+	            {1,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,1,1,1,1,1},
+	            {1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
+	            {1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1},
+	            {1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1},
+	            {1,3,2,2,1,1,2,2,2,2,2,2,2,0,8,2,2,2,2,2,2,2,1,1,2,2,3,1},
+	            {1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1},
+	            {1,1,1,2,1,1,2,1,1,2,1,1,1,1,1,1,1,1,2,1,1,2,1,1,2,1,1,1},
+	            {1,2,2,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,1,1,2,2,2,2,2,2,1},
+	            {1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1},
+	            {1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1},
+	            {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+	            {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	};
+
+
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("PacMan!");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Board board = new Board();
+		board.setUp();
+		frame.add(board);
+		frame.pack();
+		frame.setVisible(true);
+		board.dynamic();
+	}
+
+	private void setUp() {
+
+	}
+
+	public Board() {
+		this.setPreferredSize(new Dimension(888,988));
+
+		this.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				System.out.println("You just entered!! "+arg0);
+			}
+
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				System.out.println("You just exited!! "+arg0);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				int y =arg0.getY();
+				int x = arg0.getX();
+				System.out.println("You just clicked: "+ x + " " + y + " " + arg0);
+
+			}
+
+
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				System.out.println("mouse released " +arg0);
+				int y = arg0.getY();
+				int x = arg0.getX();
+
+			}
+
+		});
+	}
+
+
+
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		drawMap((Graphics2D) g);
+		scoreBoard.draw(g);
+
+	}
+
+
+	public void dynamic(){
+		setUpKeyMappings();
+		timer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				repaint();
+				
+			}
+		});
+		timer.start();
+	}
+
+
+	private void setUpKeyMappings() {
+
+		getInputMap().put(KeyStroke.getKeyStroke("LEFT"),"left");
+		getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),"right");
+		getInputMap().put(KeyStroke.getKeyStroke("UP"),"up");
+		getInputMap().put(KeyStroke.getKeyStroke("DOWN"),"down");
+		
+		getActionMap().put("left",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.direction=Pacman.Direction.LEFT;
+				pacman.arcAngle=360;
+				pacman.startAngle=180;
+				tryToMovePacman("left");
+			}
+		});
+		getActionMap().put("right",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.direction=Pacman.Direction.RIGHT;
+				pacman.arcAngle=360;
+				pacman.startAngle=0;
+				tryToMovePacman("right");
+				
+			}
+		});
+		getActionMap().put("up",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.direction=Pacman.Direction.UP;
+				pacman.arcAngle=360;
+				pacman.startAngle=90;
+				tryToMovePacman("up");
+				
+			}
+		});
+		getActionMap().put("down",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.direction=Pacman.Direction.DOWN;
+				pacman.arcAngle=360;
+				pacman.startAngle=270;
+				tryToMovePacman("down");
+			}
+		});
+		requestFocusInWindow();
+
+	}
+
+
+
+	private void tryToMovePacman(String direction) {
+		int[] pacmanSpot = findPacman();
+		System.out.println("tried to move pacman he at " + pacmanSpot[0] + " " + pacmanSpot[1]);
+		
+		if(direction.equals("left") && checkSpot(pacmanSpot[0], pacmanSpot[1] -1)){
+			board[pacmanSpot[0]][pacmanSpot[1]] = 0;
+		}
+		if(direction.equals("right") && checkSpot(pacmanSpot[0], (pacmanSpot[1] +1))){
+			board[pacmanSpot[0]][pacmanSpot[1]] = 0;
+			int[] newLoc = findPacman();
+
+		}
+		if(direction.equals("up")&& checkSpot(pacmanSpot[0]-1, pacmanSpot[1])){
+			board[pacmanSpot[0]][pacmanSpot[1]] = 0;
+		}
+		if(direction.equals("down") && checkSpot(pacmanSpot[0]+1, pacmanSpot[1] )){
+			board[pacmanSpot[0]][pacmanSpot[1]] = 0;
+		}
+
+
+
+	}
+
+	private boolean checkSpot(int i, int j) {
+		System.out.println("checkSpot got " + i+ " " + j);
+		if(board[i][j] == 0){
+			board[i][j] = 8;
+			
+			System.out.println("values set to " + pacman.x + " " + pacman.y);
+			repaint();
+			return true;
+		}
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public int checkSpot(int[] spot){
+		return board[spot[0]][spot[1]];
+	}
+
+	private void drawMap(Graphics2D g) {
+		for(int i = 0; i < board.length; i++) {
+			for(int w = 0; w < board[i].length; w ++) {
+				if(board[i][w] == 1) {
+					g.setColor(Color.black);
+
+				}
+				if(board[i][w] == 0) {
+					g.setColor(Color.WHITE);
+				}
+				if(board[i][w] == 2){
+					g.drawOval(w*SQUARE, i*SQUARE, 12, 12);
+				}
+
+				g.fillRect(w*SQUARE, i*SQUARE+100, 24, 24);
+				if(board[i][w] == 8){
+					g.setColor(Color.white);
+					pacman.setX(w*SQUARE);
+					pacman.setY(i*SQUARE+100);
+					pacman.draw(g);
+				}
+			}
+		}
+
+	}
+
+	public int[] findPacman(){
+		for(int r = 0; r < board.length; r++){
+			for(int c = 0 ; c < board[r].length; c++){
+				if(board[r][c] == 2){
+					int[] why = new int[2];
+					why[0] = r;
+					why[1] = c;
+					return why;
+				}
+			}
+		}
+		System.out.println("findPacman returned null");
+
+		return null;
+
+	}
+
+}
