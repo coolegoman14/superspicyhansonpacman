@@ -4,8 +4,8 @@ import java.awt.Graphics2D;
 public class Pinky extends Ghost {
 	
 	
-	int x=50;
-	int y=50;
+	int x=100;
+	int y=250;
 	int targetX;
 	int targetY;
 	

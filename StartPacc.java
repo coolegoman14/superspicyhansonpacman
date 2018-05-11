@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
@@ -18,7 +19,9 @@ public class StartPacc {
 	int speed=6;
 	Board board= new Board();
 	Pacman pacman= new Pacman();
-	//Ghost ghost= new Ghost(pacman);
+	Blinky blinky= new Blinky(pacman);
+	Pinky pinky= new Pinky(pacman);
+	
 
 	public StartPacc() {
 		
@@ -33,9 +36,11 @@ public class StartPacc {
 			@Override
 			public void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				//board.drawBoard((Graphics2D) g);
+				board.drawBoard((Graphics2D) g);
+			
 				pacman.draw((Graphics2D) g);
-				ghost.drawGhosts((Graphics2D) g);
+				blinky.draw((Graphics2D) g);
+				//pinky.draw((Graphics2D) g);
 			}
 		};
 		setUpGame();
@@ -54,9 +59,10 @@ public class StartPacc {
 	protected void tick() {
 		
 		if(pacman.direction==Pacman.Direction.RIGHT){
-			//board.board[pacman.y][pacman.x]=0;
-			pacman.x+=speed;
-			//board.board[pacman.y][pacman.x]=2;
+				if(canMove(Pacman.Direction.RIGHT)){
+				pacman.x+=speed;
+				}
+
 			if(pacman.startAngle==70){
 				pacman.isIncreasing=false;
 			}
@@ -65,22 +71,24 @@ public class StartPacc {
 			}
 		}
 		
-		if(pacman.direction==Pacman.Direction.LEFT){
-			//board.board[pacman.y][pacman.x]=0;
-			pacman.x-=speed;
-			//board.board[pacman.y][pacman.x]=2;
+		if(pacman.direction==Pacman.Direction.LEFT){	
+			if(canMove(Pacman.Direction.LEFT)){
+				pacman.x-=speed;
+			}
+			
 			if(pacman.startAngle==250){
 				pacman.isIncreasing=false;
 			}
 			else if(pacman.startAngle==180){
 				pacman.isIncreasing=true;
 			}
-			
 		}
+		
 		if(pacman.direction==Pacman.Direction.UP){
-			//board.board[pacman.y][pacman.x]=0;
-			pacman.y-=speed;
-			//board.board[pacman.y][pacman.x]=2;
+			if(canMove(Pacman.Direction.UP)){
+				pacman.y-=speed;
+			}
+			
 			if(pacman.startAngle==160){
 				pacman.isIncreasing=false;
 			}
@@ -90,9 +98,9 @@ public class StartPacc {
 		}
 		
 		if(pacman.direction==Pacman.Direction.DOWN){
-			//board.board[pacman.y][pacman.x]=0;
-			pacman.y+=speed;
-			//board.board[pacman.y][pacman.x]=2;
+			if(canMove(Pacman.Direction.DOWN)){
+				pacman.y+=speed;
+			}
 			
 			if(pacman.startAngle==340){
 				pacman.isIncreasing=false;
@@ -123,38 +131,80 @@ public class StartPacc {
 		panel.getActionMap().put("left",new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				if(canMove(Pacman.Direction.LEFT)){
 				pacman.direction=Pacman.Direction.LEFT;
 				pacman.arcAngle=360;
 				pacman.startAngle=180;
+				}
 			}
 		});
 		panel.getActionMap().put("right",new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(canMove(Pacman.Direction.RIGHT)){
 				pacman.direction=Pacman.Direction.RIGHT;
 				pacman.arcAngle=360;
 				pacman.startAngle=0;
+				}
 				
 			}
 		});
 		panel.getActionMap().put("up",new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(canMove(Pacman.Direction.UP)){
 				pacman.direction=Pacman.Direction.UP;
 				pacman.arcAngle=360;
 				pacman.startAngle=90;
+				}
 				
 			}
 		});
 		panel.getActionMap().put("down",new AbstractAction(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(canMove(Pacman.Direction.DOWN)){
 				pacman.direction=Pacman.Direction.DOWN;
 				pacman.arcAngle=360;
 				pacman.startAngle=270;
+				}
 			}
 		});
 		panel.requestFocusInWindow();
+	}
+	
+	public Boolean canMove(Pacman.Direction direction){
+		if(direction==Pacman.Direction.RIGHT){
+			for(Rectangle r: Board.wallList){
+				if(pacman.clone.intersects(r.getX()-12, r.getY(), r.getWidth(), r.getHeight())){
+					return false;
+				}
+			}
+		}
+		if(direction==Pacman.Direction.LEFT){
+			for(Rectangle r: Board.wallList){
+				if(pacman.clone.intersects(r.getX()+9, r.getY(), r.getWidth(), r.getHeight())){
+					return false;
+				}
+			}
+		}
+		if(direction==Pacman.Direction.UP){
+			for(Rectangle r: Board.wallList){
+				if(pacman.clone.intersects(r.getX(), r.getY()+9, r.getWidth(), r.getHeight())){
+					return false;
+				}
+			}
+		}
+		if(direction==Pacman.Direction.DOWN){
+			for(Rectangle r: Board.wallList){
+				if(pacman.clone.intersects(r.getX(), r.getY()-9, r.getWidth(), r.getHeight())){
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	private void setUpGame(){
@@ -163,7 +213,7 @@ public class StartPacc {
 		panel.setPreferredSize(new Dimension(1500,800));
 		frame.pack();
 		frame.setVisible(true);
-		panel.setBackground(Color.LIGHT_GRAY);
+		panel.setBackground(Color.black);
 		this.setUpKeyMappings();
 	}
 

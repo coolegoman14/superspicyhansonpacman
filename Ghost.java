@@ -1,5 +1,6 @@
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 
@@ -30,10 +31,7 @@ public abstract class Ghost {
 	
 	public void draw(Graphics2D g){
 		
-		
-		
 	}
-	
 	
 	
 }
