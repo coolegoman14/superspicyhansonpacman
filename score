@@ -1,0 +1,5 @@
+fruit: 200 points
+ghosts: 200points^x-1 for every consecutive ghost
+regular pellets: 10 points
+large pellets: 50
+ghosts move half as fast as pacman when they are scared
