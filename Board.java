@@ -7,12 +7,8 @@ import java.util.List;
 
 
 public class Board {
-	
-	
 	static List<Rectangle> wallList= new ArrayList<Rectangle>();
 	Boolean first=true;
-
-	
 	static int[][] board= {
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1},
@@ -45,23 +41,17 @@ public class Board {
             {1,2,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,2,1},
             {1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-
 	};
 
-	public Board() {
-		
-	}
-	
-	public void drawBoard(Graphics2D g){
+	public Board() {}
 
-		
+	public void drawBoard(Graphics2D g){		
 		for(int i=0;i<board.length;i++){
 			for(int x=0;x<board[i].length;x++){
 				if(board[i][x]==1){
 					Rectangle rect= new Rectangle(36,36);
 					g.setColor(Color.black);
 					rect.setLocation(x*37, i*37);
-					
 						if(first){
 							wallList.add(rect);
 						}
@@ -70,7 +60,6 @@ public class Board {
 					g.draw(rect);
 				}
 				else{
-					
 					g.setColor(Color.DARK_GRAY);	
 					g.drawRect(x*37, i*37, 36, 36);
 					g.fillRect(x*37, i*37, 36, 36);
@@ -81,5 +70,4 @@ public class Board {
 		}
 		first=false;
 	}
-	
 }
