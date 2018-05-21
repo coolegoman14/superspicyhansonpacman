@@ -24,3 +24,4 @@ public class Sound {
 }
 //https://www.youtube.com/watch?v=3q4f6I5zi2w
 //https://www.youtube.com/watch?v=QVrxiJyLTqU
+https://stackoverflow.com/questions/11919009/using-javax-sound-sampled-clip-to-play-loop-and-stop-mutiple-sounds-in-a-gamehttps://stackoverflow.com/questions/11919009/using-javax-sound-sampled-clip-to-play-loop-and-stop-mutiple-sounds-in-a-game
