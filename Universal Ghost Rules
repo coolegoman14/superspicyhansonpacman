@@ -1,0 +1,4 @@
+Can only move forward, left or right, cannot turn around completely
+chooses where to go at intersections
+Ghosts only reverse direction when going from  chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened
+https://www.webpacman.com/ghosts.html
