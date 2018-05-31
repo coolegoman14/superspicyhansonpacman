@@ -1,0 +1,211 @@
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.Timer;
+
+public class StartPacc {
+
+	private JFrame frame = new JFrame("PAC-MAN");
+	private JPanel panel;
+	static Timer timer = new Timer(50,null);
+	static int gameKey = 0;
+	static int lives = 3;
+	Pacman pacman= new Pacman();
+	Blinky blinky= new Blinky();
+	Pinky pinky= new Pinky();
+	Image life;
+	Clyde clyde= new Clyde();
+	Inky inky= new Inky(blinky);
+	Board board= new Board(blinky, pinky, clyde, inky);
+
+	int time=0;
+	int yeetmybyap = 0;
+	Sound[] master = new Sound[10];{
+		master[0] = new Sound("f.wav");
+		master[1] = new Sound("SirenSound.wav");
+		master[2] = new Sound("litty.wav");
+		master[3] = new Sound("death.wav");
+	}
+
+	public StartPacc() {
+
+		try {
+			this.life=ImageIO.read(new File("life.png")).getScaledInstance(50, 50,Image.SCALE_SMOOTH);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	public static void main(String[] args){
+		new StartPacc().startGame();
+	}
+
+	private void startGame() {
+
+		panel = new JPanel() {
+			@Override
+			public void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				board.drawBoard((Graphics2D) g);
+				board.drawGhostPath((Graphics2D) g);
+				pacman.draw((Graphics2D) g);
+				blinky.draw((Graphics2D) g);
+				pinky.draw((Graphics2D) g);
+				inky.draw((Graphics2D) g);
+				clyde.draw((Graphics2D) g);
+				drawLives(g);
+			}
+
+
+		};
+		makeFrame();
+		System.out.print("yoit");
+		master[0].getClip().start();
+		setUpKeyMappings();
+
+
+		timer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				tick();
+			}
+		});
+		timer.start();
+
+	}
+
+	protected void tick() {
+		yeetmybyap+=50;
+		if(yeetmybyap>4000) {
+			if (pacman.direction!=pacman.userDirection && pacman.canMove(pacman.userDirection)) {
+				pacman.direction=pacman.userDirection;
+				pacman.changeAngleAttributes(pacman.direction);
+
+			}
+			checkCollision();
+
+
+			pacman.move();
+			pacman.doMouthAnimation();
+			panel.repaint();
+		}
+	}
+
+
+	private void drawLives(Graphics g) {
+		int x = 800;
+		int y =200;
+
+
+		for(int i = 0; i < lives; i++) {
+			g.drawImage(life, x, y, null);
+			x += 80;
+		}
+
+	}
+
+	private void checkCollision() {
+
+		for(Ghost g: Board.ghosts) {
+
+			if(pacman.clone.intersects(g.clone) && g.isScared == true) {
+				pacman.coins += 200;
+				g.deathAnimation();
+
+			}
+			if(pacman.clone.intersects(g.clone) && g.isScared == false) {
+				pacman.dying = true;
+
+			}
+		}
+
+	}
+	private void setUpKeyMappings() {
+
+		panel.getInputMap().put(KeyStroke.getKeyStroke("LEFT"),"left");
+		panel.getInputMap().put(KeyStroke.getKeyStroke("RIGHT"),"right");
+		panel.getInputMap().put(KeyStroke.getKeyStroke("UP"),"up");
+		panel.getInputMap().put(KeyStroke.getKeyStroke("DOWN"),"down");
+
+		panel.getActionMap().put("left",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.userDirection=Pacman.Direction.LEFT;
+				if(pacman.canMove(Pacman.Direction.LEFT)){
+					pacman.direction=Pacman.Direction.LEFT;
+					pacman.changeAngleAttributes(Pacman.Direction.LEFT);
+
+				}
+			}
+		});
+		panel.getActionMap().put("right",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.userDirection=Pacman.Direction.RIGHT;
+				if(pacman.canMove(Pacman.Direction.RIGHT)){
+					pacman.direction=Pacman.Direction.RIGHT;
+					pacman.changeAngleAttributes(Pacman.Direction.RIGHT);
+
+				}
+
+			}
+		});
+		panel.getActionMap().put("up",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.userDirection=Pacman.Direction.UP;
+				if(pacman.canMove(Pacman.Direction.UP)){
+					pacman.direction=Pacman.Direction.UP;
+					pacman.changeAngleAttributes(Pacman.Direction.UP);
+
+				}
+			}
+		});
+		panel.getActionMap().put("down",new AbstractAction(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				pacman.userDirection=Pacman.Direction.DOWN;
+				if(pacman.canMove(Pacman.Direction.DOWN)){
+					pacman.direction=Pacman.Direction.DOWN;
+					pacman.changeAngleAttributes(Pacman.Direction.DOWN);
+				}
+			}
+		});
+		panel.requestFocusInWindow();
+	}
+
+	private void makeFrame(){
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(panel);
+		panel.setPreferredSize(new Dimension(1500,800));
+		frame.pack();
+		frame.setVisible(true);
+		panel.setBackground(Color.black);
+		this.setUpKeyMappings();
+	}
+
+	public void recallProtocol() {
+		System.out.println("got to recall protocol");
+		for(Ghost a : Board.ghosts) {
+			a.putInCamp();
+		}
+		pacman.putBack();
+		System.out.println("byap");
+		board.makeTileArray();
+		timer.start();
+
+	}
+
+}
